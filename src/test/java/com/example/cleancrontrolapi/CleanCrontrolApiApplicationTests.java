@@ -1,10 +1,10 @@
-package com.exemplo.projetosistemagerenciamento;
+package com.example.cleancrontrolapi;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class ProjetoSistemaGerenciamentoApplicationTests {
+class CleanCrontrolApiApplicationTests {
 
 	@Test
 	void contextLoads() {

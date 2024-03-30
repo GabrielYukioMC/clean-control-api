@@ -1,7 +1,6 @@
-package com.exemplo.projetosistemagerenciamento.controller;
+package com.example.cleancrontrolapi.controller;
 
-import com.exemplo.projetosistemagerenciamento.models.Usuario;
-import com.exemplo.projetosistemagerenciamento.repositories.UsuarioRepository;
+
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -14,6 +13,9 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.example.cleancrontrolapi.model.Usuario;
+import com.example.cleancrontrolapi.repository.UsuarioRepository;
 
 import java.util.List;
 
@@ -32,7 +34,7 @@ public class UserController {
 
     @GetMapping("/{id}")
     public ResponseEntity<Usuario> getUserById(@PathVariable("id") Integer id) {
-        Usuario usuario = repository.findById(id).orElse(null);
+        com.example.cleancrontrolapi.model.Usuario usuario = repository.findById(id).orElse(null);
         return usuario == null ? ResponseEntity.status(204).build() : ResponseEntity.status(200).body(usuario);
     }
 

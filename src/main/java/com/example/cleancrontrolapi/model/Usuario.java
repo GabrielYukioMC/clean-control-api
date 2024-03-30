@@ -1,4 +1,4 @@
-package com.exemplo.projetosistemagerenciamento.models;
+package com.example.cleancrontrolapi.model;
 
 import jakarta.persistence.*;
 

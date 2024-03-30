@@ -1,9 +1,9 @@
-package com.exemplo.projetosistemagerenciamento.repositories;
+package com.example.cleancrontrolapi.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
-import com.exemplo.projetosistemagerenciamento.models.Usuario;
+import com.example.cleancrontrolapi.model.Usuario;
 
 import java.util.List;
 
