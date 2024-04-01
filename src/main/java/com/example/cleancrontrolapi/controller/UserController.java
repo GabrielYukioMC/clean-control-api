@@ -1,10 +1,18 @@
+/**
+ * File: UserController.java
+ * Author: @GabrielYukioMC
+ * Created: 12/02/2024
+ * Last Modified: 30/03/2024 
+ * Description: Classe que controla as requisições feitas para a entidade Usuario,
+ *  como cadastro, login, atualização e remoção de usuários. 
+ * version: 1.0
+ */
 package com.example.cleancrontrolapi.controller;
-
-
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -17,9 +25,15 @@ import org.springframework.web.bind.annotation.RestController;
 import com.example.cleancrontrolapi.model.Usuario;
 import com.example.cleancrontrolapi.repository.UsuarioRepository;
 
+import jakarta.validation.Valid;
+import lombok.Getter;
+import lombok.Setter;
+
 import java.util.List;
 
+
 @RestController
+@Validated
 @RequestMapping("/usuario")
 public class UserController {
 
@@ -34,14 +48,14 @@ public class UserController {
 
     @GetMapping("/{id}")
     public ResponseEntity<Usuario> getUserById(@PathVariable("id") Integer id) {
-        com.example.cleancrontrolapi.model.Usuario usuario = repository.findById(id).orElse(null);
+        Usuario usuario = repository.findById(id).orElse(null);
         return usuario == null ? ResponseEntity.status(204).build() : ResponseEntity.status(200).body(usuario);
     }
 
     @PostMapping("/login")
-    public ResponseEntity<Usuario> loginUser(@RequestBody Usuario loginRequest) {
-        String email = loginRequest.getEmail();
-        String password = loginRequest.getSenha();
+    public ResponseEntity<Usuario> loginUser(@RequestBody UsuarioRequest usuarioRequest) {
+        String email = usuarioRequest.getEmail();
+        String password = usuarioRequest.getSenha();
 
         Usuario usuario = repository.findByEmailAndSenha(email, password);
 
@@ -53,7 +67,7 @@ public class UserController {
     }
 
     @PostMapping
-    public ResponseEntity<Usuario> cadastrarUsuarios(@RequestBody Usuario usuario) {
+    public ResponseEntity<Usuario> cadastrarUsuarios(@Valid @RequestBody Usuario usuario) {
 
         for (Usuario u : repository.findAll()) {
             if (u.getEmail().equals(usuario.getEmail())) {
@@ -66,9 +80,9 @@ public class UserController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Void> updateInfoUser(@PathVariable("id") String id, @RequestBody Usuario usuario) {
+    public ResponseEntity<Void> updateInfoUser(@PathVariable("id") Integer id, @RequestBody Usuario usuario) {
         for (Usuario u : repository.findAll()) {
-            if (u.getIdUsuario().equals(Integer.parseInt(id))) {
+            if (u.getIdUsuario().equals(id)) {
                 u.setNome(usuario.getNome() != null ? usuario.getNome() : u.getNome());
                 u.setSobrenome(usuario.getSobrenome() != null ? usuario.getSobrenome() : u.getSobrenome());
                 u.setEmail(usuario.getEmail() != null ? usuario.getEmail() : u.getEmail());
@@ -77,8 +91,6 @@ public class UserController {
                 u.setNickname(usuario.getNickname() != null ? usuario.getNickname() : u.getNickname());
 
                 repository.save(u);
-
-                // ^^ !"".equals(usuario.getNome()) ? usuario.getNome() : u.getNome() valida de se o campo foi prenchido se foi ele atualiza se não ele mantem o valor antigo  (～￣▽￣)～
             }
         }
 
@@ -96,4 +108,13 @@ public class UserController {
         return ResponseEntity.status(204).build();
 
     }
+
+
+    public static class UsuarioRequest {
+
+       @Getter @Setter private String senha;
+       @Getter @Setter private String email;
+       
+    }
+
 }
