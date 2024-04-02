@@ -5,7 +5,6 @@ import org.hibernate.validator.constraints.Length;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
@@ -54,7 +53,6 @@ public class Usuario {
     @Setter
     @NotNull(message = "Tipo de usuário é obrigatório")
     private Integer fkTipoUser;
-
     @Getter
     @Setter
     @NotNull(message = "Empresa é obrigatória")
