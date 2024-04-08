@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -22,12 +23,13 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.example.cleancrontrolapi.model.Usuario;
+import com.example.cleancrontrolapi.model.usuario.Usuario;
+import com.example.cleancrontrolapi.model.usuario.UsuarioRequest;
+import com.example.cleancrontrolapi.model.usuario.UsuarioResponse;
 import com.example.cleancrontrolapi.repository.UsuarioRepository;
 
 import jakarta.validation.Valid;
-import lombok.Getter;
-import lombok.Setter;
+
 
 import java.util.List;
 
@@ -41,8 +43,8 @@ public class UserController {
     private UsuarioRepository repository;
 
     @GetMapping
-    public ResponseEntity<List<Usuario>> getAll() {
-        List<Usuario> lstUsuario = repository.findAll();
+    public ResponseEntity<List<UsuarioResponse>> getAll() {
+        List<UsuarioResponse> lstUsuario = repository.findAll().stream().map(UsuarioResponse::new).toList();
         return lstUsuario.isEmpty() ? ResponseEntity.status(204).build() : ResponseEntity.status(200).body(lstUsuario);
     }
 
@@ -52,51 +54,30 @@ public class UserController {
         return usuario == null ? ResponseEntity.status(204).build() : ResponseEntity.status(200).body(usuario);
     }
 
-    @PostMapping("/login")
-    public ResponseEntity<Usuario> loginUser(@RequestBody UsuarioRequest usuarioRequest) {
-        String email = usuarioRequest.getEmail();
-        String password = usuarioRequest.getSenha();
+    // @PostMapping("/login")
+    // public ResponseEntity<Usuario> loginUser(@RequestBody LoginDTO usuarioRequest) {
+    //     String email = usuarioRequest.getEmail();
+    //     String password = usuarioRequest.getSenha();
 
-        Usuario usuario = repository.findByEmailAndSenha(email, password);
+    //     Usuario usuario = repository.findByEmailAndSenhaAndEmpresa(email, password);
 
-        if (usuario == null) {
-            return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
-        }
+    //     if (usuario == null) {
+    //         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    //     }
 
-        return ResponseEntity.status(HttpStatus.OK).body(usuario);
-    }
+    //     return ResponseEntity.status(HttpStatus.OK).body(usuario);
+    // }
 
+    @CrossOrigin(origins = "*", allowedHeaders = "*")
     @PostMapping
-    public ResponseEntity<Usuario> cadastrarUsuarios(@Valid @RequestBody Usuario usuario) {
+    public ResponseEntity<UsuarioRequest> cadastrarUsuarios(@Valid @RequestBody UsuarioRequest usuario) {
 
-        for (Usuario u : repository.findAll()) {
-            if (u.getEmail().equals(usuario.getEmail())) {
-                return ResponseEntity.status(204).build();
-            }
-        }
-        repository.save(usuario);
+        Usuario usuarioEntity = new Usuario(usuario);
+        repository.save(usuarioEntity);
         return ResponseEntity.status(201).body(usuario);
 
     }
-
-    @PutMapping("/{id}")
-    public ResponseEntity<Void> updateInfoUser(@PathVariable("id") Integer id, @RequestBody Usuario usuario) {
-        for (Usuario u : repository.findAll()) {
-            if (u.getIdUsuario().equals(id)) {
-                u.setNome(usuario.getNome() != null ? usuario.getNome() : u.getNome());
-                u.setSobrenome(usuario.getSobrenome() != null ? usuario.getSobrenome() : u.getSobrenome());
-                u.setEmail(usuario.getEmail() != null ? usuario.getEmail() : u.getEmail());
-                u.setTelefone(usuario.getTelefone() != null ? usuario.getTelefone() : u.getTelefone());
-                u.setSenha(usuario.getSenha() != null ? usuario.getSenha() : u.getSenha());
-                u.setNickname(usuario.getNickname() != null ? usuario.getNickname() : u.getNickname());
-
-                repository.save(u);
-            }
-        }
-
-        return ResponseEntity.status(200).build();
-    }
-
+    
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteUsuario(@PathVariable("id") Integer id) {
         for (Usuario u : repository.findAll()) {
@@ -110,11 +91,6 @@ public class UserController {
     }
 
 
-    public static class UsuarioRequest {
-
-       @Getter @Setter private String senha;
-       @Getter @Setter private String email;
-       
-    }
+    
 
 }

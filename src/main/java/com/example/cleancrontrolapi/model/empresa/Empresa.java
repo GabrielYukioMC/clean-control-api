@@ -1,4 +1,4 @@
-package com.example.cleancrontrolapi.model;
+package com.example.cleancrontrolapi.model.empresa;
 
 import org.hibernate.validator.constraints.br.CNPJ;
 
@@ -9,33 +9,42 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@EqualsAndHashCode(of = "idEmpresa")
 @Table(name = "empresa")
 public class Empresa {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Getter
-    @Setter
+   
     private Integer idEmpresa;
 
-    @Getter
-    @Setter
+   
     @NotBlank(message = "Nome é obrigatório")
     private String nome;
-    @Getter
-    @Setter
+   
     @CNPJ(message = "CNPJ inválido")
     private String cnpj;
-    @Getter
-    @Setter
+   
     @Email(message = "Email inválido")
     private String email_comercial;
-    @Getter
-    @Setter
+   
     @NotBlank(message = "Telefone é obrigatório")
     private String telefone;
+
+    public Empresa(EmpresaRequest data) {
+        this(null, data.nome(), data.cnpj(), data.email_comercial(), data.telefone());
+    }
+
+    
 }
